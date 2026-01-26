@@ -41,4 +41,6 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
         address to,
         uint deadline
     ) external;
+
+    function pairFor(address tokenA, address tokenB) external view returns (address);
 }

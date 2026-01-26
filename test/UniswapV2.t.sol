@@ -2,15 +2,13 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {Counter} from "../src/Counter.sol";
 import {IUniswapV2Router02} from "../src/v2-periphery/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "../src/v2-core/interfaces/IUniswapV2Factory.sol";
 import {IUniswapV2Pair} from "../src/v2-core/interfaces/IUniswapV2Pair.sol";
 import {WETH9} from "../src/mocks/WETH9.sol";
 import {MockERC20} from "../src/mocks/MockERC20.sol";
 
-contract CounterTest is Test {
-    Counter public counter;
+contract UniswapV2Test is Test {
     
     IUniswapV2Factory public factory;
     IUniswapV2Router02 public router;
@@ -21,8 +19,6 @@ contract CounterTest is Test {
     address public user = makeAddr("user");
 
     function setUp() public {
-        counter = new Counter();
-        counter.setNumber(0);
         
         weth = new WETH9();
         
@@ -54,16 +50,6 @@ contract CounterTest is Test {
         tokenA.mint(user, 1000 ether);
         tokenB.mint(user, 1000 ether);
     }
-
-    function test_Increment() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
-    }
-
-    function testFuzz_SetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
-    }
     
     function test_FactoryDeployed() public view {
         assertEq(factory.feeToSetter(), address(this));
@@ -78,12 +64,13 @@ contract CounterTest is Test {
         address pair = factory.createPair(address(tokenA), address(tokenB));
         console.log("Pair created at:", pair);
         assertFalse(pair == address(0));
+        assertTrue(pair == router.pairFor(address(tokenA), address(tokenB)));
     }
     
     function test_PairCreationCodeHash() public view {
-        // Factory bytecode에 임베드된 Pair creation code를 추출
-        // Factory bytecode 구조: ... PUSH2 0x3c31 DUP1 PUSH2 0x0d4b ...
-        // Pair creation code는 offset 0x0d4b에서 시작, 길이 0x3c31 (15409 bytes)
+        // Extract Pair creation code embedded in Factory bytecode
+        // Factory bytecode structure: ... PUSH2 0x3c31 DUP1 PUSH2 0x0d4b ...
+        // Pair creation code starts at offset 0x0d4b, length 0x3c31 (15409 bytes)
         bytes memory factoryBytecode = vm.getCode("out/v2-core/UniswapV2Factory.sol/UniswapV2Factory.json");
         
         // Extract Pair creation code from Factory bytecode
@@ -108,6 +95,8 @@ contract CounterTest is Test {
         
         tokenA.approve(address(router), type(uint256).max);
         tokenB.approve(address(router), type(uint256).max);
+
+        // console.log("predicted address", uniV2Router02.getPair())   
         
         (uint256 addedA, uint256 addedB, uint256 liquidity) = router.addLiquidity(
             address(tokenA),
