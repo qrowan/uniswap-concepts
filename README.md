@@ -4,6 +4,35 @@ A repository for learning the core concepts and contract architecture of Uniswap
 
 ---
 
+## Quick Start
+
+### Prerequisites
+
+Install Foundry: https://book.getfoundry.sh/getting-started/installation
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+```
+
+### Build & Test
+
+```bash
+# Install dependencies
+forge install
+
+# Build contracts
+forge build
+
+# Run all tests
+forge test
+
+# Run scenario tests with detailed output
+forge test --match-contract UniswapV2ScenariosTest -vvv
+```
+
+---
+
 ## 1. Constant Product AMM (CP-AMM)
 
 UniswapV2 uses the **Constant Product Automated Market Maker** model.
