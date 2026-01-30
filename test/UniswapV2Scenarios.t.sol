@@ -50,7 +50,7 @@ contract UniswapV2ScenariosTest is TestUtils {
         
         // Deploy Factory
         bytes memory factoryBytecode = abi.encodePacked(
-            vm.getCode("out/v2-core/UniswapV2Factory.sol/UniswapV2Factory.json"),
+            vm.getCode("out/UniswapV2Factory.sol/UniswapV2Factory.json"),
             abi.encode(address(this))
         );
         address factoryAddr;
@@ -62,7 +62,7 @@ contract UniswapV2ScenariosTest is TestUtils {
         
         // Deploy Router
         bytes memory routerBytecode = abi.encodePacked(
-            vm.getCode("out/v2-periphery/UniswapV2Router02.sol/UniswapV2Router02.json"),
+            vm.getCode("out/UniswapV2Router02.sol/UniswapV2Router02.json"),
             abi.encode(address(factory), address(weth))
         );
         address routerAddr;

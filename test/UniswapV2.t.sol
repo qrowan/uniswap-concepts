@@ -23,7 +23,7 @@ contract UniswapV2Test is Test {
         weth = new WETH9();
         
         bytes memory factoryBytecode = abi.encodePacked(
-            vm.getCode("out/v2-core/UniswapV2Factory.sol/UniswapV2Factory.json"),
+            vm.getCode("out/UniswapV2Factory.sol/UniswapV2Factory.json"),
             abi.encode(address(this))
         );
         address factoryAddr;
@@ -34,7 +34,7 @@ contract UniswapV2Test is Test {
         factory = IUniswapV2Factory(factoryAddr);
         
         bytes memory routerBytecode = abi.encodePacked(
-            vm.getCode("out/v2-periphery/UniswapV2Router02.sol/UniswapV2Router02.json"),
+            vm.getCode("out/UniswapV2Router02.sol/UniswapV2Router02.json"),
             abi.encode(address(factory), address(weth))
         );
         address routerAddr;
@@ -71,7 +71,7 @@ contract UniswapV2Test is Test {
         // Extract Pair creation code embedded in Factory bytecode
         // Factory bytecode structure: ... PUSH2 0x3c31 DUP1 PUSH2 0x0d4b ...
         // Pair creation code starts at offset 0x0d4b, length 0x3c31 (15409 bytes)
-        bytes memory factoryBytecode = vm.getCode("out/v2-core/UniswapV2Factory.sol/UniswapV2Factory.json");
+        bytes memory factoryBytecode = vm.getCode("out/UniswapV2Factory.sol/UniswapV2Factory.json");
         
         // Extract Pair creation code from Factory bytecode
         uint256 offset = 0x0d4b;
